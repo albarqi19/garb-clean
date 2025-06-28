@@ -27,7 +27,6 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->viteTheme('resources/css/filament/admin/theme.css')
             ->renderHook(
                 'panels::body.end',
                 fn () => view('filament.custom-styles')
