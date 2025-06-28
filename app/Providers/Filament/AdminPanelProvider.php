@@ -27,10 +27,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
-            ->renderHook(
-                'panels::body.end',
-                fn () => view('filament.custom-styles')
-            )
+            ->authGuard('web')
             ->colors([
                 'primary' => Color::Amber,
             ])
