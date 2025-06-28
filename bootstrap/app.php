@@ -1,5 +1,10 @@
 <?php
 
+// Force correct port for Railway deployment
+if (!isset($_ENV['PORT']) && isset($_SERVER['PORT'])) {
+    $_ENV['PORT'] = $_SERVER['PORT'];
+}
+
 /*
 |--------------------------------------------------------------------------
 | Create The Application
