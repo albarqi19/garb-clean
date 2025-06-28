@@ -1,0 +1,153 @@
+<?php
+
+namespace App\Filament\Admin\Resources\CurriculumResource\Pages;
+
+use App\Filament\Admin\Resources\CurriculumResource;
+use Filament\Resources\Pages\Page;
+use Filament\Forms;
+use Filament\Forms\Form;
+use App\Models\Curriculum;
+use App\Models\CurriculumPlan;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\DB;
+use Filament\Actions\Action;
+use Illuminate\Contracts\View\View;
+use Livewire\Component;
+
+class BulkPlanCreator extends Page
+{
+    protected static string $resource = CurriculumResource::class;
+
+    protected static string $view = 'filament.admin.resources.curriculum-resource.pages.create-bulk-plans';
+
+    public function mount(int | string $record): void
+    {
+        $this->curriculum = Curriculum::findOrFail($record);
+    }
+
+    public ?Curriculum $curriculum = null;
+    
+    public $expected_days = 1;
+    public $level_id = null;
+    public $lesson_plans = '';
+    public $minor_review_plans = '';
+    public $major_review_plans = '';
+
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Section::make('خيارات إدخال بيانات المنهج')
+                    ->schema([
+                        TextInput::make('expected_days')
+                            ->label('عدد الأيام المتوقعة لكل خطة')
+                            ->helperText('عدد الأيام التي يحتاجها الطالب/المعلم لإنهاء الخطة الواحدة')
+                            ->numeric()
+                            ->default(1)
+                            ->minValue(1)
+                            ->required(),
+                        
+                        Select::make('level_id')
+                            ->label('المستوى')
+                            ->helperText('اختر المستوى الذي تريد إضافة هذه الخطط له')
+                            ->options(function () {
+                                return $this->curriculum->levels()
+                                    ->pluck('name', 'id')
+                                    ->toArray();
+                            })
+                            ->visible(fn () => $this->curriculum->type === 'منهج طالب')
+                            ->required(fn () => $this->curriculum->type === 'منهج طالب'),
+                        
+                        Textarea::make('lesson_plans')
+                            ->label('خطط الدروس')
+                            ->placeholder('ضع هنا قائمة الدروس (درس في كل سطر)')
+                            ->helperText('يمكنك نسخ القائمة مباشرة من ملف Excel')
+                            ->required()
+                            ->rows(10),
+                        
+                        Textarea::make('minor_review_plans')
+                            ->label('خطط المراجعة الصغرى')
+                            ->placeholder('ضع هنا قائمة خطط المراجعة الصغرى (خطة في كل سطر)')
+                            ->helperText('يمكنك نسخ القائمة مباشرة من ملف Excel')
+                            ->rows(10),
+                        
+                        Textarea::make('major_review_plans')
+                            ->label('خطط المراجعة الكبرى')
+                            ->placeholder('ضع هنا قائمة خطط المراجعة الكبرى (خطة في كل سطر)')
+                            ->helperText('يمكنك نسخ القائمة مباشرة من ملف Excel')
+                            ->rows(10),
+                    ]),
+            ]);
+    }
+
+    public function processPlans(): void
+    {
+        $this->validate([
+            'expected_days' => ['required', 'integer', 'min:1'],
+            'lesson_plans' => ['required', 'string'],
+            'minor_review_plans' => ['nullable', 'string'],
+            'major_review_plans' => ['nullable', 'string'],
+            'level_id' => [
+                fn () => $this->curriculum->type === 'منهج طالب' ? 'required' : 'nullable',
+                'exists:curriculum_levels,id'
+            ],
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            // معالجة الدروس
+            $this->processPlanType('lesson', $this->lesson_plans);
+            
+            // معالجة المراجعة الصغرى
+            if ($this->minor_review_plans) {
+                $this->processPlanType('minor_review', $this->minor_review_plans);
+            }
+            
+            // معالجة المراجعة الكبرى
+            if ($this->major_review_plans) {
+                $this->processPlanType('major_review', $this->major_review_plans);
+            }
+
+            DB::commit();
+
+            Notification::make()
+                ->success()
+                ->title('تم إضافة الخطط بنجاح')
+                ->send();
+
+            $this->redirect(CurriculumResource::getUrl('edit', ['record' => $this->curriculum]));
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Notification::make()
+                ->danger()
+                ->title('حدث خطأ أثناء إضافة الخطط')
+                ->body($e->getMessage())
+                ->send();
+        }
+    }
+
+    protected function processPlanType(string $type, string $plans): void
+    {
+        $plans = array_filter(explode("\n", $plans));
+        $order = 1;
+        
+        foreach ($plans as $plan) {
+            $plan = trim($plan);
+            if (empty($plan)) continue;            CurriculumPlan::create([
+                'curriculum_id' => $this->curriculum->id,
+                'level_id' => $this->level_id,
+                'name' => $plan,
+                'type' => $type,
+                'expected_days' => $this->expected_days,
+                'order' => $order++,
+                'content' => $plan, // Add default content to avoid null constraint error
+            ]);
+        }
+    }
+}
