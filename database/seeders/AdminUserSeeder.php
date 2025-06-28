@@ -19,6 +19,7 @@ class AdminUserSeeder extends Seeder
         if (!$adminUser) {
             User::create([
                 'name' => 'GARB Admin',
+                'username' => 'admin',
                 'email' => 'admin@garb.com',
                 'password' => Hash::make('password123'),
                 'email_verified_at' => now(),
