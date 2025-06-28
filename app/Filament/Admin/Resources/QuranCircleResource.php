@@ -52,7 +52,9 @@ class QuranCircleResource extends Resource
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('neighborhood')
                                     ->label('الحي')
-                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\TextInput::make('street')
+                                    ->label('الشارع')
                                     ->maxLength(255),
                                 Forms\Components\TextInput::make('contact_number')
                                     ->label('رقم الاتصال')
