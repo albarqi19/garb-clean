@@ -1,0 +1,7 @@
+@import '/vendor/filament/filament/resources/css/theme.css';
+
+/* Custom styles for GARB admin panel */
+:root {
+    --primary: 245 158 11;
+    --gray: 103 114 134;
+}
