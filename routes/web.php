@@ -144,3 +144,24 @@ Route::get('/admin-test', function () {
 Route::get('/admin-direct', function () {
     return redirect('/admin');
 });
+
+// مسار admin بديل كامل
+Route::get('/my-admin', function () {
+    // تسجيل دخول المستخدم مباشرة
+    $user = \App\Models\User::first();
+    auth()->login($user);
+    
+    return redirect('/admin');
+});
+
+// اختبار مباشر للوحة
+Route::get('/admin-bypass', function () {
+    $user = \App\Models\User::first();
+    auth()->login($user);
+    
+    return response()->json([
+        'logged_in' => auth()->check(),
+        'user' => auth()->user()->email,
+        'redirect_url' => url('/admin')
+    ]);
+});
