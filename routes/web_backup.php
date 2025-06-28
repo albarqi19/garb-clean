@@ -11,7 +11,7 @@ Route::get('/test', function () {
     return response()->json([
         'status' => 'success',
         'message' => 'Application is working',
-        'user' => \Illuminate\Support\Facades\Auth::check() ? \Illuminate\Support\Facades\Auth::user()->email : 'not authenticated',
+        'user' => auth()->check() ? auth()->user()->email : 'not authenticated',
         'timestamp' => now()
     ]);
 });
