@@ -34,95 +34,45 @@ class QuranCircleResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make('بيانات الحلقة الأساسية')
-                    ->schema([
-                        Forms\Components\TextInput::make('name')
-                            ->label('اسم الحلقة')
-                            ->required()
-                            ->maxLength(255),
-                        Forms\Components\Select::make('mosque_id')
-                            ->label('المسجد')
-                            ->relationship('mosque', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->createOptionForm([
-                                Forms\Components\TextInput::make('name')
-                                    ->label('اسم المسجد')
-                                    ->required()
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('neighborhood')
-                                    ->label('الحي')
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('street')
-                                    ->label('الشارع')
-                                    ->maxLength(255),
-                                Forms\Components\TextInput::make('contact_number')
-                                    ->label('رقم الاتصال')
-                                    ->tel()
-                                    ->maxLength(255),
-                            ])
-                            ->required(),
-                        Forms\Components\Select::make('circle_type')
-                            ->label('نوع الحلقة')
-                            ->required()
-                            ->options([
-                                'حلقة فردية' => 'حلقة فردية',
-                                'حلقة جماعية' => 'حلقة جماعية',
-                            ]),
-                        Forms\Components\Select::make('circle_status')
-                            ->label('حالة الحلقة')
-                            ->required()
-                            ->options([
-                                'نشطة' => 'نشطة',
-                                'معلقة' => 'معلقة',
-                                'مغلقة' => 'مغلقة',
-                            ]),                        Forms\Components\Select::make('time_period')
-                            ->label('الفترة الزمنية')
-                            ->required()
-                            ->options([
-                                'عصر' => 'عصر',
-                                'مغرب' => 'مغرب',
-                                'عصر ومغرب' => 'عصر ومغرب',
-                                'كل الأوقات' => 'كل الأوقات',
-                                'صباحية' => 'صباحية',
-                                'مسائية' => 'مسائية',
-                                'ليلية' => 'ليلية',
-                                'الفجر' => 'الفجر',
-                            ]),
-                    ])->columns(3),
-
-                Forms\Components\Section::make('بيانات الإشراف والمتابعة')
-                    ->schema([
-                        Forms\Components\Select::make('supervisor_id')
-                            ->label('المشرف المسؤول')
-                            ->relationship('supervisor', 'name')
-                            ->searchable()
-                            ->preload(),
-                        Forms\Components\Select::make('monitor_id')
-                            ->label('المراقب المسؤول')
-                            ->relationship('monitor', 'name')
-                            ->searchable()
-                            ->preload(),
-                    ])->columns(2),
-
-                Forms\Components\Section::make('بيانات الأنظمة والربط')
-                    ->schema([
-                        Forms\Components\TextInput::make('registration_link')
-                            ->label('رابط التسجيل')
-                            ->url()
-                            ->maxLength(255),
-                        Forms\Components\Toggle::make('has_ratel')
-                            ->label('مفعل في برنامج رتل')
-                            ->default(false),
-                        Forms\Components\Toggle::make('has_qias')
-                            ->label('يستخدم نظام قياس')
-                            ->default(false),
-                        Forms\Components\TextInput::make('masser_link')
-                            ->label('رابط ماسر')
-                            ->url()
-                            ->maxLength(255),
-                    ])->columns(2),
-            ]);
+                Forms\Components\TextInput::make('name')
+                    ->label('اسم الحلقة')
+                    ->required()
+                    ->maxLength(255),
+                Forms\Components\Select::make('mosque_id')
+                    ->label('المسجد')
+                    ->relationship('mosque', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->required(),
+                Forms\Components\Select::make('circle_type')
+                    ->label('نوع الحلقة')
+                    ->required()
+                    ->options([
+                        'حلقة فردية' => 'حلقة فردية',
+                        'حلقة جماعية' => 'حلقة جماعية',
+                    ]),
+                Forms\Components\Select::make('circle_status')
+                    ->label('حالة الحلقة')
+                    ->required()
+                    ->options([
+                        'نشطة' => 'نشطة',
+                        'معلقة' => 'معلقة',
+                        'مغلقة' => 'مغلقة',
+                    ]),
+                Forms\Components\Select::make('time_period')
+                    ->label('الفترة الزمنية')
+                    ->required()
+                    ->options([
+                        'عصر' => 'عصر',
+                        'مغرب' => 'مغرب',
+                        'عصر ومغرب' => 'عصر ومغرب',
+                        'كل الأوقات' => 'كل الأوقات',
+                        'صباحية' => 'صباحية',
+                        'مسائية' => 'مسائية',
+                        'ليلية' => 'ليلية',
+                        'الفجر' => 'الفجر',
+                    ]),
+            ])->columns(2);
     }
 
     public static function table(Table $table): Table
