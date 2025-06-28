@@ -60,6 +60,7 @@ class Student extends Model
         'is_active_user' => 'boolean',
         'password_changed_at' => 'datetime',
         'last_login_at' => 'datetime',
+        'password' => 'hashed',
     ];
 
     /**

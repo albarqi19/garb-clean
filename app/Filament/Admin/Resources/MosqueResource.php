@@ -56,7 +56,6 @@ class MosqueResource extends Resource
                     ->maxLength(255),
                 Forms\Components\TextInput::make('neighborhood')
                     ->label('الحي')
-                    ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('street')
                     ->label('الشارع')
@@ -144,10 +143,20 @@ class MosqueResource extends Resource
                     ->label('رقم الاتصال')
                     ->searchable(),
                 // إضافة عمود رابط خرائط جوجل
-                Tables\Columns\TextColumn::make('google_maps_url')
+                Tables\Columns\TextColumn::make('location')
                     ->label('الموقع')
-                    ->formatStateUsing(fn ($state) => $state ? 'رابط الموقع' : '-')
-                    ->url(fn ($record) => $record && $record->google_maps_url ? $record->google_maps_url : null, true)
+                    ->formatStateUsing(function ($record) {
+                        if ($record->location_lat && $record->location_long) {
+                            return 'عرض على الخريطة';
+                        }
+                        return '-';
+                    })
+                    ->url(function ($record) {
+                        if ($record->location_lat && $record->location_long) {
+                            return $record->google_maps_url;
+                        }
+                        return null;
+                    }, true)
                     ->icon('heroicon-o-map-pin')
                     ->color('success')
                     ->hidden(fn ($record) => !$record || !$record->location_lat || !$record->location_long),
