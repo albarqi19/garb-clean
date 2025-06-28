@@ -28,6 +28,26 @@ Route::get('/test-admin', function () {
     ]);
 });
 
+// Route للتحقق من إعدادات التطبيق
+Route::get('/test-config', function () {
+    return response()->json([
+        'app_key_exists' => config('app.key') ? true : false,
+        'app_key_length' => strlen(config('app.key')),
+        'session_driver' => config('session.driver'),
+        'csrf_token' => csrf_token(),
+        'route_list' => collect(\Illuminate\Support\Facades\Route::getRoutes())->filter(function($route) {
+            return str_contains($route->uri(), 'admin');
+        })->map(function($route) {
+            return [
+                'uri' => $route->uri(),
+                'methods' => $route->methods(),
+                'name' => $route->getName()
+            ];
+        })->values()
+    ]);
+});
+
+
 // مسارات المهام التسويقية
 Route::prefix('marketing-tasks')->middleware('auth')->group(function () {
     Route::get('/', 'App\Http\Controllers\MarketingTaskController@index');
