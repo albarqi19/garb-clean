@@ -2,11 +2,15 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build"
+        "build": "vite build",
+        "start": "php artisan serve --host=0.0.0.0 --port=$PORT"
     },
     "devDependencies": {
         "axios": "^1.1.2",
         "laravel-vite-plugin": "^0.7.2",
         "vite": "^4.0.0"
+    },
+    "engines": {
+        "php": "8.2"
     }
 }
