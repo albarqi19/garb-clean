@@ -31,7 +31,7 @@ return new class extends Migration
             $table->boolean('had_previous_circles'); // هل كان في المسجد حلقات سابقة
             $table->unsignedSmallInteger('expected_students_number')->nullable(); // العدد المتوقع للطلاب
             $table->boolean('is_mosque_owner_welcoming'); // هل باني المسجد مرحب بفتح الحلقة
-            $table->set('circle_time', ['عصر', 'مغرب', 'عصر ومغرب', 'كل الأوقات']); // وقت الحلقة المطلوب
+            $table->enum('circle_time', ['عصر', 'مغرب', 'عصر ومغرب', 'كل الأوقات']); // وقت الحلقة المطلوب
             
             // معلومات إضافية
             $table->text('notes')->nullable(); // ملاحظات أخرى
