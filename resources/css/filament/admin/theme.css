@@ -5,3 +5,17 @@
     --primary: 245 158 11;
     --gray: 103 114 134;
 }
+
+/* Arabic font support */
+body {
+    font-family: 'Tajawal', 'Arial', sans-serif;
+}
+
+/* Custom admin panel improvements */
+.fi-sidebar-nav {
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.fi-card {
+    border-radius: 8px;
+}
