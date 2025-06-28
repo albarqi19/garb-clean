@@ -47,7 +47,6 @@ Route::get('/test-config', function () {
     ]);
 });
 
-
 // مسارات المهام التسويقية
 Route::prefix('marketing-tasks')->middleware('auth')->group(function () {
     Route::get('/', 'App\Http\Controllers\MarketingTaskController@index');
@@ -112,4 +111,36 @@ Route::prefix('strategic')->middleware('auth')->name('strategic.')->group(functi
         Route::delete('/{strategicInitiative}', 'App\Http\Controllers\StrategicInitiativeController@destroy')->name('destroy');
         Route::post('/{strategicInitiative}/update-status', 'App\Http\Controllers\StrategicInitiativeController@updateStatus')->name('update-status');
     });
+});
+
+// مسار admin بديل للاختبار
+Route::get('/admin-test', function () {
+    try {
+        $panel = app('filament')->getPanel('admin');
+        $user = \App\Models\User::first();
+        
+        return response()->json([
+            'panel_exists' => true,
+            'panel_id' => $panel->getId(),
+            'panel_path' => $panel->getPath(),
+            'user' => [
+                'email' => $user->email,
+                'is_active' => $user->is_active,
+                'roles' => $user->roles->pluck('name'),
+                'permissions' => $user->getAllPermissions()->pluck('name')->take(5) // أول 5 فقط
+            ],
+            'middleware_check' => 'passed'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
+        ], 500);
+    }
+});
+
+// محاولة الوصول لصفحة admin بدون middleware
+Route::get('/admin-direct', function () {
+    return redirect('/admin');
 });
