@@ -1,21 +1,42 @@
-@import '/vendor/filament/filament/resources/css/theme.css';
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap');
 
-/* Custom styles for GARB admin panel */
+/* استخدام الخط العربي */
+* {
+    font-family: 'Tajawal', sans-serif !important;
+}
+
+/* تحسين الألوان */
 :root {
-    --primary: 245 158 11;
-    --gray: 103 114 134;
+    --primary-50: #fffbeb;
+    --primary-100: #fef3c7;
+    --primary-500: #f59e0b;
+    --primary-600: #d97706;
+    --primary-700: #b45309;
+    --primary-900: #78350f;
 }
 
-/* Arabic font support */
-body {
-    font-family: 'Tajawal', 'Arial', sans-serif;
+/* تحسين التخطيط */
+.fi-main {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
-/* Custom admin panel improvements */
-.fi-sidebar-nav {
-    background: rgba(255, 255, 255, 0.95);
+/* تحسين الكروت */
+.fi-section-content-ctn,
+.fi-form-component-ctn {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-.fi-card {
+/* تحسين الأزرار */
+.fi-btn {
     border-radius: 8px;
+    font-weight: 500;
+}
+
+/* تحسين الجداول */
+.fi-ta-table {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
